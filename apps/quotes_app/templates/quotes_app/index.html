@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    {%load static%}
+    <link rel="stylesheet" href="{% static 'quotes_app/css/index.css' %}" media="screen" title="no title" charset="utf-8">
+</head>
+
+<body>
+    <a href="/quotes/logout">Logout</a>
+    <h2>Welcome, {{request.session.alias}}!</h2>
+    <h4>Quotable Quotes</h4>
+    <div id="box">
+        {% for x in others %}
+        <div class="smallbox">
+            {{x.author}}: {{x.message}} <br>
+            <br> Posted by <a href="/quotes/user/{{x.user.id}}">{{x.user.name}}</a>
+            <form class="favorites" action="/quotes/add/{{x.id}}" method="post">
+                {% csrf_token %}
+                <input type="submit" value="Add to My List">
+            </form>
+            <br>
+        </div>
+        {% endfor %}
+    </div>
+    <h4>Your Favorites</h4>
+    <div id="box2">
+        {% for x in favorites %}
+        <div class="smallbox">
+            {{x.author}}: {{x.message}} <br>
+            <br> Posted by <a href="/quotes/user/{{x.user.id}}">{{x.user.name}}</a>
+            <form class="favorites" action="/quotes/remove/{{x.id}}" method="post">
+                {% csrf_token %}
+                <input type="submit" value="Remove From My List">
+            </form>
+            <br>
+        </div>
+        {% endfor %}
+    </div>
+    {% if messages %}
+    <ul>
+        {% for error in messages %}
+        <li>{{ error }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+
+    <h4>Contribute a Quote:</h4>
+    <form action="/quotes/create" method="post">
+        {%csrf_token%} Quoted By: <input type="text" name="author"> <br>
+        <p></p>
+        Message: <textarea name="message" id="" cols="25" rows="5"></textarea> <br>
+        <input type="submit" value="Submit">
+
+    </form>
+
+
+</body>
+
+</html>
